@@ -32,11 +32,39 @@ class MyHomePage extends StatefulWidget {
 
 enum Bread { tawar, gandum }
 
+extension BreadExtension on Bread {
+  Widget get displayImage {
+    switch (this) {
+      case Bread.tawar:
+        return Image.asset(
+          'images/page1version1.png',
+          height: 100,
+          width: 100,
+          // sesuaikan path_to_tawar_image dengan path gambar untuk Roti Tawar
+        );
+      case Bread.gandum:
+        return Image.asset(
+          'images/page1version2.png',
+          height: 100,
+          width: 100,
+          // sesuaikan path_to_gandum_image dengan path gambar untuk Roti Gandum
+        );
+    }
+  }
+}
+
 enum Topping { chocholate, cheese, vanilla, strawberry, peanut, pineapple }
 
 enum ToppingOrNot { pakai, tdkpakai }
 
 enum Burn { burn, notburn }
+
+bool isChocoSelected = false;
+bool isCheeseSelected = false;
+bool isVanillaSelected = false;
+bool isStrawberrySelected = false;
+bool isPeanutSelected = false;
+bool isPineappleSelected = false;
 
 String nameBread = 'tawar';
 int breadPrice = 0;
@@ -45,13 +73,21 @@ int burnPrice = 0;
 int toppingPrice = 0;
 
 class _MyHomePageState extends State<MyHomePage> {
-  void resetState() {
-    setState(() {
-      _bread = null;
-      _toppingOrNot = null;
-      _topping = null;
-    });
-  }
+  bool _isGandumSelected = false;
+  bool _isTawarSelected = false;
+
+  bool _isWithSelected = false;
+  bool _isWithoutSelected = false;
+
+  bool _isBurnSelected = false;
+  bool _isNotBurnSelected = false;
+
+  bool _isChocoSelected = false;
+  bool _isCheeseSelected = false;
+  bool _isVanillaSelected = false;
+  bool _isStrawberrySelected = false;
+  bool _isPeanutSelected = false;
+  bool _isPineappleSelected = false;
 
   Bread? _bread;
   ToppingOrNot? _toppingOrNot;
@@ -115,11 +151,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       leading: Radio<Bread>(
                         value: Bread.tawar,
                         groupValue: _bread,
-                        onChanged: (Bread? value) {
-                          setState(() {
-                            _bread = value;
-                          });
-                        },
+                        onChanged: _isGandumSelected
+                            ? null
+                            : (Bread? value) {
+                                setState(() {
+                                  _bread = value;
+                                  _isTawarSelected = true;
+                                  _isGandumSelected = false;
+                                });
+                              },
                         activeColor: Color.fromARGB(255, 84, 132, 231),
                       ),
                     ),
@@ -151,11 +191,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       leading: Radio<Bread>(
                         value: Bread.gandum,
                         groupValue: _bread,
-                        onChanged: (Bread? value) {
-                          setState(() {
-                            _bread = value;
-                          });
-                        },
+                        onChanged: _isTawarSelected
+                            ? null
+                            : (Bread? value) {
+                                setState(() {
+                                  _bread = value;
+                                  _isGandumSelected = true;
+                                  _isTawarSelected = false;
+                                });
+                              },
                         activeColor: Color.fromARGB(255, 84, 132, 231),
                       ),
                     ),
@@ -210,11 +254,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             leading: Radio<ToppingOrNot>(
                               value: ToppingOrNot.pakai,
                               groupValue: _toppingOrNot,
-                              onChanged: (ToppingOrNot? value) {
-                                setState(() {
-                                  _toppingOrNot = value;
-                                });
-                              },
+                              onChanged: _isWithoutSelected
+                                  ? null
+                                  : (ToppingOrNot? value) {
+                                      setState(() {
+                                        _toppingOrNot = value;
+                                        _isWithSelected = true;
+                                        _isWithoutSelected = false;
+                                      });
+                                    },
                               activeColor: Color.fromARGB(255, 84, 132, 231),
                             ),
                           ),
@@ -246,11 +294,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             leading: Radio<ToppingOrNot>(
                               value: ToppingOrNot.tdkpakai,
                               groupValue: _toppingOrNot,
-                              onChanged: (ToppingOrNot? value) {
-                                setState(() {
-                                  _toppingOrNot = value;
-                                });
-                              },
+                              onChanged: _isWithSelected
+                                  ? null
+                                  : (ToppingOrNot? value) {
+                                      setState(() {
+                                        _toppingOrNot = value;
+                                        _isWithoutSelected = true;
+                                        _isWithSelected = false;
+                                      });
+                                    },
                               activeColor: Color.fromARGB(255, 84, 132, 231),
                             ),
                           ),
@@ -303,11 +355,23 @@ class _MyHomePageState extends State<MyHomePage> {
                               leading: Radio<Topping>(
                                 value: Topping.chocholate,
                                 groupValue: _topping,
-                                onChanged: (Topping? value) {
-                                  setState(() {
-                                    _topping = value;
-                                  });
-                                },
+                                onChanged: _isCheeseSelected ||
+                                        _isVanillaSelected ||
+                                        _isStrawberrySelected ||
+                                        _isPeanutSelected ||
+                                        _isPineappleSelected
+                                    ? null
+                                    : (Topping? value) {
+                                        setState(() {
+                                          _topping = value;
+                                          _isChocoSelected = true;
+                                          _isCheeseSelected = false;
+                                          _isVanillaSelected = false;
+                                          _isStrawberrySelected = false;
+                                          _isPeanutSelected = false;
+                                          _isPineappleSelected = false;
+                                        });
+                                      },
                                 activeColor: Color.fromARGB(255, 84, 132, 231),
                               ),
                             ),
@@ -343,11 +407,23 @@ class _MyHomePageState extends State<MyHomePage> {
                               leading: Radio<Topping>(
                                 value: Topping.cheese,
                                 groupValue: _topping,
-                                onChanged: (Topping? value) {
-                                  setState(() {
-                                    _topping = value;
-                                  });
-                                },
+                                onChanged: _isChocoSelected ||
+                                        _isStrawberrySelected ||
+                                        _isVanillaSelected ||
+                                        _isPeanutSelected ||
+                                        _isPineappleSelected
+                                    ? null
+                                    : (Topping? value) {
+                                        setState(() {
+                                          _topping = value;
+                                          _isCheeseSelected = true;
+                                          _isVanillaSelected = false;
+                                          _isChocoSelected = false;
+                                          _isStrawberrySelected = false;
+                                          _isPeanutSelected = false;
+                                          _isPineappleSelected = false;
+                                        });
+                                      },
                                 activeColor: Color.fromARGB(255, 84, 132, 231),
                               ),
                             ),
@@ -383,11 +459,23 @@ class _MyHomePageState extends State<MyHomePage> {
                               leading: Radio<Topping>(
                                 value: Topping.vanilla,
                                 groupValue: _topping,
-                                onChanged: (Topping? value) {
-                                  setState(() {
-                                    _topping = value;
-                                  });
-                                },
+                                onChanged: _isChocoSelected ||
+                                        _isStrawberrySelected ||
+                                        _isCheeseSelected ||
+                                        _isPeanutSelected ||
+                                        _isPineappleSelected
+                                    ? null
+                                    : (Topping? value) {
+                                        setState(() {
+                                          _topping = value;
+                                          _isVanillaSelected = true;
+                                          _isCheeseSelected = false;
+                                          _isChocoSelected = false;
+                                          _isStrawberrySelected = false;
+                                          _isPeanutSelected = false;
+                                          _isPineappleSelected = false;
+                                        });
+                                      },
                                 activeColor: Color.fromARGB(255, 84, 132, 231),
                               ),
                             ),
@@ -430,11 +518,23 @@ class _MyHomePageState extends State<MyHomePage> {
                               leading: Radio<Topping>(
                                 value: Topping.strawberry,
                                 groupValue: _topping,
-                                onChanged: (Topping? value) {
-                                  setState(() {
-                                    _topping = value;
-                                  });
-                                },
+                                onChanged: _isChocoSelected ||
+                                        _isVanillaSelected ||
+                                        _isCheeseSelected ||
+                                        _isPeanutSelected ||
+                                        _isPineappleSelected
+                                    ? null
+                                    : (Topping? value) {
+                                        setState(() {
+                                          _topping = value;
+                                          _isStrawberrySelected = true;
+                                          _isCheeseSelected = false;
+                                          _isVanillaSelected = false;
+                                          _isChocoSelected = false;
+                                          _isPeanutSelected = false;
+                                          _isPineappleSelected = false;
+                                        });
+                                      },
                                 activeColor: Color.fromARGB(255, 84, 132, 231),
                               ),
                             ),
@@ -470,11 +570,23 @@ class _MyHomePageState extends State<MyHomePage> {
                               leading: Radio<Topping>(
                                 value: Topping.peanut,
                                 groupValue: _topping,
-                                onChanged: (Topping? value) {
-                                  setState(() {
-                                    _topping = value;
-                                  });
-                                },
+                                onChanged: _isChocoSelected ||
+                                        _isCheeseSelected ||
+                                        _isVanillaSelected ||
+                                        _isStrawberrySelected ||
+                                        _isPineappleSelected
+                                    ? null
+                                    : (Topping? value) {
+                                        setState(() {
+                                          _topping = value;
+                                          _isPeanutSelected = true;
+                                          _isCheeseSelected = false;
+                                          _isVanillaSelected = false;
+                                          _isStrawberrySelected = false;
+                                          _isChocoSelected = false;
+                                          _isPineappleSelected = false;
+                                        });
+                                      },
                                 activeColor: Color.fromARGB(255, 84, 132, 231),
                               ),
                             ),
@@ -511,11 +623,23 @@ class _MyHomePageState extends State<MyHomePage> {
                               leading: Radio<Topping>(
                                 value: Topping.pineapple,
                                 groupValue: _topping,
-                                onChanged: (Topping? value) {
-                                  setState(() {
-                                    _topping = value;
-                                  });
-                                },
+                                onChanged: _isChocoSelected ||
+                                        _isVanillaSelected ||
+                                        _isCheeseSelected ||
+                                        _isStrawberrySelected ||
+                                        _isPeanutSelected
+                                    ? null
+                                    : (Topping? value) {
+                                        setState(() {
+                                          _topping = value;
+                                          _isPineappleSelected = true;
+                                          _isCheeseSelected = false;
+                                          _isVanillaSelected = false;
+                                          _isStrawberrySelected = false;
+                                          _isPeanutSelected = false;
+                                          _isChocoSelected = false;
+                                        });
+                                      },
                                 activeColor: Color.fromARGB(255, 84, 132, 231),
                               ),
                             ),
@@ -583,11 +707,15 @@ class _MyHomePageState extends State<MyHomePage> {
                               leading: Radio<Burn>(
                                 value: Burn.burn,
                                 groupValue: _burn,
-                                onChanged: (Burn? value) {
-                                  setState(() {
-                                    _burn = value;
-                                  });
-                                },
+                                onChanged: _isNotBurnSelected
+                                    ? null
+                                    : (Burn? value) {
+                                        setState(() {
+                                          _burn = value;
+                                          _isBurnSelected = true;
+                                          _isNotBurnSelected = false;
+                                        });
+                                      },
                                 activeColor: Color.fromARGB(255, 84, 132, 231),
                               ),
                             ),
@@ -619,11 +747,15 @@ class _MyHomePageState extends State<MyHomePage> {
                               leading: Radio<Burn>(
                                 value: Burn.notburn,
                                 groupValue: _burn,
-                                onChanged: (Burn? value) {
-                                  setState(() {
-                                    _burn = value;
-                                  });
-                                },
+                                onChanged: _isBurnSelected
+                                    ? null
+                                    : (Burn? value) {
+                                        setState(() {
+                                          _burn = value;
+                                          _isNotBurnSelected = true;
+                                          _isBurnSelected = false;
+                                        });
+                                      },
                                 activeColor: Color.fromARGB(255, 84, 132, 231),
                               ),
                             ),
@@ -690,7 +822,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         MaterialPageRoute(
                             builder: (context) => ResultScreen(
                                 selectedBread: _bread!,
-                                // selectedBurn: _burn!,
+                                selectedBurn: _burn!,
                                 breadPrice: breadPrice,
                                 nameBread: nameBread,
                                 toppingOrNot:
